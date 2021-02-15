@@ -1,23 +1,43 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <User
+    v-for="user in users"
+    :key="user.id"
+    :user='user'/>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import Vue from "vue";
+import User from './components/User.vue';
+import { IUser } from "@/types";
 
 export default Vue.extend({
-  name: 'App',
-  components: {
-    HelloWorld
+  name: "App",
+  components:{
+    User
+  },
+  data() {
+    return {
+      users: Array,
+    };
+  },
+
+  methods: {
+    async getUsers() {
+      let response = await fetch("https://jsonplaceholder.typicode.com/users");
+      let usersFromServer = await response.json();
+      this.users = usersFromServer;
+    },
+  },
+
+  beforeMount(){
+    this.getUsers()
   }
 });
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
